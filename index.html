@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Agendador de Datashow</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Segoe UI',sans-serif;background:#f0f4f8;color:#1a202c;min-height:100vh}
+  header{background:linear-gradient(135deg,#2b6cb0,#2c5282);color:#fff;padding:18px 24px;text-align:center}
+  header h1{font-size:1.4rem;font-weight:700}
+  header p{font-size:.85rem;opacity:.85;margin-top:4px}
+  .container{max-width:860px;margin:0 auto;padding:20px 16px}
+  .card{background:#fff;border-radius:12px;padding:20px;margin-bottom:20px;box-shadow:0 2px 8px rgba(0,0,0,.08)}
+  .card h2{font-size:1rem;font-weight:600;color:#2b6cb0;margin-bottom:14px;display:flex;align-items:center;gap:8px}
+  .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  @media(max-width:560px){.form-grid{grid-template-columns:1fr}}
+  label{font-size:.82rem;font-weight:600;color:#4a5568;display:block;margin-bottom:4px}
+  input,select{width:100%;padding:9px 12px;border:1.5px solid #cbd5e0;border-radius:8px;font-size:.9rem;outline:none;transition:border .2s}
+  input:focus,select:focus{border-color:#2b6cb0}
+  .full{grid-column:1/-1}
+  .btn{padding:10px 22px;border:none;border-radius:8px;font-weight:600;font-size:.9rem;cursor:pointer;transition:all .2s}
+  .btn-primary{background:#2b6cb0;color:#fff}
+  .btn-primary:hover{background:#2c5282}
+  .btn-danger{background:#e53e3e;color:#fff;font-size:.78rem;padding:5px 12px}
+  .btn-danger:hover{background:#c53030}
+  .msg{padding:10px 14px;border-radius:8px;font-size:.88rem;margin-top:10px;display:none}
+  .msg.ok{background:#c6f6d5;color:#276749;display:block}
+  .msg.err{background:#fed7d7;color:#c53030;display:block}
+  .filter-row{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px;align-items:flex-end}
+  .filter-row>div{display:flex;flex-direction:column;gap:4px}
+  .filter-row label{font-size:.78rem}
+  table{width:100%;border-collapse:collapse;font-size:.84rem}
+  thead tr{background:#ebf4ff}
+  th,td{padding:9px 10px;border:1px solid #e2e8f0;text-align:left}
+  th{font-weight:600;color:#2b6cb0;font-size:.8rem}
+  tr:nth-child(even){background:#f7fafc}
+  .badge{display:inline-block;padding:2px 8px;border-radius:12px;font-size:.74rem;font-weight:600}
+  .badge-manha{background:#bee3f8;color:#2b6cb0}
+  .badge-tarde{background:#fefcbf;color:#744210}
+  .badge-noite{background:#e9d8fd;color:#553c9a}
+  .empty{text-align:center;color:#a0aec0;padding:18px;font-size:.88rem}
+  .slot{padding:3px 10px;border-radius:10px;font-size:.76rem;font-weight:600;display:block;text-align:center}
+  .slot-free{background:#c6f6d5;color:#276749}
+  .slot-full{background:#fed7d7;color:#c53030}
+  .realtime-badge{display:inline-flex;align-items:center;gap:5px;font-size:.75rem;color:#276749;background:#c6f6d5;padding:3px 10px;border-radius:20px;margin-left:8px}
+  .dot{width:7px;height:7px;border-radius:50%;background:#276749;animation:pulse 1.5s infinite}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+</style>
+</head>
+<body>
+<header>
+  <h1>📽️ Agendador de Datashow</h1>
+  <p>Escola — 2 datashows disponíveis · Manhã · Tarde · Noite</p>
+</header>
+<div class="container">
+
+  <!-- Disponibilidade -->
+  <div class="card">
+    <h2>📊 Disponibilidade por Turno <span class="realtime-badge"><span class="dot"></span>Tempo real</span></h2>
+    <div style="margin-bottom:8px;display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+      <label style="margin:0;font-size:.82rem">Data:</label>
+      <input type="date" id="checkDate" style="width:160px" oninput="renderAvail()"/>
+    </div>
+    <div id="availDisplay" style="color:#a0aec0;font-size:.85rem">Selecione uma data acima.</div>
+  </div>
+
+  <!-- Formulário -->
+  <div class="card">
+    <h2>➕ Novo Agendamento</h2>
+    <div class="form-grid">
+      <div>
+        <label>Nome do Professor(a)</label>
+        <input type="text" id="fNome" placeholder="Ex: Maria Silva"/>
+      </div>
+      <div>
+        <label>Turma / Disciplina</label>
+        <input type="text" id="fTurma" placeholder="Ex: 3A - Matemática"/>
+      </div>
+      <div>
+        <label>Data</label>
+        <input type="date" id="fData"/>
+      </div>
+      <div>
+        <label>Turno</label>
+        <select id="fTurno">
+          <option value="">Selecione...</option>
+          <option>Manhã</option>
+          <option>Tarde</option>
+          <option>Noite</option>
+        </select>
+      </div>
+      <div>
+        <label>Horário de início</label>
+        <input type="time" id="fHorario"/>
+      </div>
+      <div>
+        <label>Horário de término</label>
+        <input type="time" id="fHorarioFim"/>
+      </div>
+      <div class="full">
+        <label>Observação (opcional)</label>
+        <input type="text" id="fObs" placeholder="Ex: Apresentação de trabalhos"/>
+      </div>
+      <div class="full">
+        <button class="btn btn-primary" onclick="agendar()">Confirmar Agendamento</button>
+        <div class="msg" id="fMsg"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tabela -->
+  <div class="card">
+    <h2>📅 Agendamentos <span class="realtime-badge"><span class="dot"></span>Tempo real</span></h2>
+    <div class="filter-row">
+      <div>
+        <label>Filtrar por data</label>
+        <input type="date" id="filtData" oninput="renderTabela()"/>
+      </div>
+      <div>
+        <label>Turno</label>
+        <select id="filtTurno" onchange="renderTabela()">
+          <option value="">Todos</option>
+          <option>Manhã</option>
+          <option>Tarde</option>
+          <option>Noite</option>
+        </select>
+      </div>
+      <div style="align-self:flex-end">
+        <button class="btn btn-primary" style="padding:8px 14px;font-size:.82rem" onclick="limparFiltros()">Limpar filtros</button>
+      </div>
+    </div>
+    <div style="overflow-x:auto">
+      <table>
+        <thead>
+          <tr>
+            <th>Data</th>
+            <th>Turno</th>
+            <th>Horário</th>
+            <th>Professor(a)</th>
+            <th>Turma/Disciplina</th>
+            <th>Obs.</th>
+            <th>Cancelar</th>
+          </tr>
+        </thead>
+        <tbody id="tabBody">
+          <tr><td colspan="7" class="empty">Carregando...</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-app.js";
+import {
+  getFirestore, collection, addDoc, deleteDoc, doc,
+  onSnapshot, query, orderBy, Timestamp
+} from "https://www.gstatic.com/firebasejs/12.10.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBuN_f7VlQ0UEe53T0OfYnGSnFeFkLpOnw",
+  authDomain: "agenda-datashow.firebaseapp.com",
+  projectId: "agenda-datashow",
+  storageBucket: "agenda-datashow.firebasestorage.app",
+  messagingSenderId: "457738164717",
+  appId: "1:457738164717:web:4bd1e5bba1becaa061afe4"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+const colRef = collection(db, "agendamentos");
+
+// Cache local atualizado em tempo real
+let agendamentos = [];
+
+// ---- LISTENER TEMPO REAL ----
+const q = query(colRef, orderBy("data"), orderBy("horario"));
+onSnapshot(q, (snapshot) => {
+  agendamentos = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+  renderTabela();
+  renderAvail();
+});
+
+// ---- HELPERS ----
+function fmtData(d) {
+  if (!d) return '';
+  const [y, m, dia] = d.split('-');
+  return `${dia}/${m}/${y}`;
+}
+function badgeClass(t) {
+  if (t === 'Manhã') return 'badge-manha';
+  if (t === 'Tarde') return 'badge-tarde';
+  return 'badge-noite';
+}
+function showMsg(el, txt, tipo) {
+  el.textContent = txt; el.className = 'msg ' + tipo;
+  setTimeout(() => { el.className = 'msg'; el.textContent = ''; }, 3500);
+}
+
+// ---- DISPONIBILIDADE ----
+window.renderAvail = function() {
+  const d = document.getElementById('checkDate').value;
+  const el = document.getElementById('availDisplay');
+  if (!d) { el.innerHTML = '<span style="color:#a0aec0">Selecione uma data acima.</span>'; return; }
+  const turnos = ['Manhã', 'Tarde', 'Noite'];
+  let html = '<div style="display:flex;gap:12px;flex-wrap:wrap">';
+  turnos.forEach(t => {
+    const count = agendamentos.filter(a => a.data === d && a.turno === t).length;
+    const livres = 2 - count;
+    html += `<div style="background:#f7fafc;border:1.5px solid #e2e8f0;border-radius:10px;padding:10px 16px;min-width:110px;text-align:center">
+      <div class="badge ${badgeClass(t)}" style="margin-bottom:6px">${t}</div>
+      <div class="${livres > 0 ? 'slot slot-free' : 'slot slot-full'}">
+        ${livres > 0 ? `${livres} vaga(s)` : 'Esgotado'}
+      </div>
+    </div>`;
+  });
+  html += '</div>';
+  el.innerHTML = html;
+}
+
+// ---- AGENDAR ----
+window.agendar = async function() {
+  const nome = document.getElementById('fNome').value.trim();
+  const turma = document.getElementById('fTurma').value.trim();
+  const data = document.getElementById('fData').value;
+  const turno = document.getElementById('fTurno').value;
+  const horario = document.getElementById('fHorario').value;
+  const horarioFim = document.getElementById('fHorarioFim').value;
+  const obs = document.getElementById('fObs').value.trim();
+  const msg = document.getElementById('fMsg');
+
+  if (!nome || !turma || !data || !turno || !horario || !horarioFim)
+    return showMsg(msg, 'Preencha todos os campos obrigatórios.', 'err');
+
+  if (horarioFim <= horario)
+    return showMsg(msg, 'O horário de término deve ser após o início.', 'err');
+
+  const hoje = new Date(); hoje.setHours(0, 0, 0, 0);
+  const sel = new Date(data + 'T00:00:00');
+  if (sel < hoje) return showMsg(msg, 'Não é possível agendar para datas passadas.', 'err');
+
+  const ocupados = agendamentos.filter(a => a.data === data && a.turno === turno).length;
+  if (ocupados >= 2) return showMsg(msg, 'Os 2 datashows já estão reservados neste turno/data.', 'err');
+
+  try {
+    await addDoc(colRef, { nome, turma, data, turno, horario, horarioFim, obs, criadoEm: Timestamp.now() });
+    ['fNome', 'fTurma', 'fData', 'fTurno', 'fHorario', 'fHorarioFim', 'fObs']
+      .forEach(i => document.getElementById(i).value = '');
+    showMsg(msg, 'Agendamento realizado com sucesso! ✅', 'ok');
+  } catch (e) {
+    showMsg(msg, 'Erro ao salvar. Tente novamente.', 'err');
+    console.error(e);
+  }
+}
+
+// ---- CANCELAR ----
+window.cancelar = async function(id) {
+  if (!confirm('Tem certeza que deseja cancelar este agendamento?')) return;
+  try {
+    await deleteDoc(doc(db, "agendamentos", id));
+  } catch (e) {
+    alert('Erro ao cancelar. Tente novamente.');
+    console.error(e);
+  }
+}
+
+// ---- TABELA ----
+window.renderTabela = function() {
+  const filtData = document.getElementById('filtData').value;
+  const filtTurno = document.getElementById('filtTurno').value;
+  let dados = [...agendamentos];
+
+  if (filtData) dados = dados.filter(a => a.data === filtData);
+  if (filtTurno) dados = dados.filter(a => a.turno === filtTurno);
+
+  const tbody = document.getElementById('tabBody');
+  if (!dados.length) {
+    tbody.innerHTML = '<tr><td colspan="7" class="empty">Nenhum agendamento encontrado.</td></tr>';
+    return;
+  }
+  tbody.innerHTML = dados.map(a => `
+    <tr>
+      <td>${fmtData(a.data)}</td>
+      <td><span class="badge ${badgeClass(a.turno)}">${a.turno}</span></td>
+      <td>${a.horario} – ${a.horarioFim}</td>
+      <td>${a.nome}</td>
+      <td>${a.turma}</td>
+      <td style="color:#718096;font-size:.8rem">${a.obs || '—'}</td>
+      <td><button class="btn btn-danger" onclick="cancelar('${a.id}')">✕ Cancelar</button></td>
+    </tr>
+  `).join('');
+}
+
+// ---- LIMPAR FILTROS ----
+window.limparFiltros = function() {
+  document.getElementById('filtData').value = '';
+  document.getElementById('filtTurno').value = '';
+  renderTabela();
+}
+
+// ---- INIT ----
+const hoje = new Date().toISOString().split('T')[0];
+document.getElementById('fData').min = hoje;
+document.getElementById('checkDate').value = hoje;
+</script>
+</body>
+</html>
