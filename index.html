@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>Agendador de Datashow</title>
+<title>Agendador de Recursos Escolares</title>
 <style>
   *{box-sizing:border-box;margin:0;padding:0}
   body{font-family:'Segoe UI',sans-serif;background:#f0f4f8;color:#1a202c;min-height:100vh}
@@ -14,7 +14,7 @@
     border-radius:20px;padding:3px 10px;font-size:.75rem;margin-top:6px}
   .dot{width:8px;height:8px;border-radius:50%;background:#68d391;animation:pulse 1.5s infinite}
   @keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
-  .container{max-width:860px;margin:0 auto;padding:20px 16px}
+  .container{max-width:900px;margin:0 auto;padding:20px 16px}
   .card{background:#fff;border-radius:12px;padding:20px;margin-bottom:20px;box-shadow:0 2px 8px rgba(0,0,0,.08)}
   .card h2{font-size:1rem;font-weight:600;color:#2b6cb0;margin-bottom:14px;display:flex;align-items:center;gap:8px}
   .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
@@ -44,6 +44,7 @@
   .badge-manha{background:#bee3f8;color:#2b6cb0}
   .badge-tarde{background:#fefcbf;color:#744210}
   .badge-noite{background:#e9d8fd;color:#553c9a}
+  .badge-recurso{background:#e2e8f0;color:#4a5568;font-size:.72rem}
   .empty{text-align:center;color:#a0aec0;padding:18px;font-size:.88rem}
   .slot{padding:3px 10px;border-radius:10px;font-size:.76rem;font-weight:600;display:block;text-align:center}
   .slot-free{background:#c6f6d5;color:#276749}
@@ -51,13 +52,16 @@
   .spinner{display:inline-block;width:16px;height:16px;border:2px solid #e2e8f0;
     border-top-color:#2b6cb0;border-radius:50%;animation:spin .7s linear infinite;vertical-align:middle;margin-right:6px}
   @keyframes spin{to{transform:rotate(360deg)}}
+  .avail-section{margin-bottom:16px}
+  .avail-section h3{font-size:.82rem;font-weight:700;color:#4a5568;margin-bottom:8px;text-transform:uppercase;letter-spacing:.05em}
+  .avail-grid{display:flex;gap:10px;flex-wrap:wrap}
 </style>
 </head>
 <body>
 
 <header>
-  <h1>📽️ Agendador de Datashow</h1>
-  <p>Escola — 3 datashows disponíveis · Manhã · Tarde · Noite</p>
+  <h1>🏫 Agendador de Recursos Escolares</h1>
+  <p>Datashow (3 un.) · Sala da TV · Lab. de Informática · Manhã · Tarde · Noite</p>
   <div class="online-badge"><span class="dot"></span> Dados em tempo real · Firebase</div>
 </header>
 
@@ -66,7 +70,7 @@
   <!-- Disponibilidade -->
   <div class="card">
     <h2>📊 Disponibilidade por Turno</h2>
-    <div style="margin-bottom:8px;display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+    <div style="margin-bottom:12px;display:flex;align-items:center;gap:10px;flex-wrap:wrap">
       <label style="margin:0;font-size:.82rem">Data:</label>
       <input type="date" id="checkDate" style="width:160px" oninput="renderAvail()"/>
     </div>
@@ -86,8 +90,13 @@
         <input type="text" id="fTurma" placeholder="Ex: 3A - Matemática"/>
       </div>
       <div>
-        <label>Data</label>
-        <input type="date" id="fData"/>
+        <label>Recurso</label>
+        <select id="fRecurso">
+          <option value="">Selecione...</option>
+          <option>Datashow</option>
+          <option>Sala da TV</option>
+          <option>Lab. de Informática</option>
+        </select>
       </div>
       <div>
         <label>Turno</label>
@@ -99,6 +108,10 @@
         </select>
       </div>
       <div>
+        <label>Data</label>
+        <input type="date" id="fData"/>
+      </div>
+      <div>
         <label>Horário de início</label>
         <input type="time" id="fHorario"/>
       </div>
@@ -106,7 +119,7 @@
         <label>Horário de término</label>
         <input type="time" id="fHorarioFim"/>
       </div>
-      <div class="full">
+      <div>
         <label>Observação (opcional)</label>
         <input type="text" id="fObs" placeholder="Ex: Apresentação de trabalhos"/>
       </div>
@@ -126,6 +139,15 @@
         <input type="date" id="filtData" oninput="renderTabela()"/>
       </div>
       <div>
+        <label>Recurso</label>
+        <select id="filtRecurso" onchange="renderTabela()">
+          <option value="">Todos</option>
+          <option>Datashow</option>
+          <option>Sala da TV</option>
+          <option>Lab. de Informática</option>
+        </select>
+      </div>
+      <div>
         <label>Turno</label>
         <select id="filtTurno" onchange="renderTabela()">
           <option value="">Todos</option>
@@ -142,12 +164,12 @@
       <table>
         <thead>
           <tr>
-            <th>Data</th><th>Turno</th><th>Horário</th>
+            <th>Data</th><th>Recurso</th><th>Turno</th><th>Horário</th>
             <th>Professor(a)</th><th>Turma/Disciplina</th><th>Obs.</th><th>Cancelar</th>
           </tr>
         </thead>
         <tbody id="tabBody">
-          <tr><td colspan="7" class="empty"><span class="spinner"></span> Conectando ao Firebase...</td></tr>
+          <tr><td colspan="8" class="empty"><span class="spinner"></span> Conectando ao Firebase...</td></tr>
         </tbody>
       </table>
     </div>
@@ -164,11 +186,19 @@
   const firebaseConfig = {
     apiKey:            "AIzaSyBuN_f7VlQ0UEe53T0OfYnGSnFeFkLpOnw",
     authDomain:        "agenda-datashow.firebaseapp.com",
-    projectId:            "agenda-datashow-73802",
+    projectId:         "agenda-datashow-73802",
     storageBucket:     "agenda-datashow.firebasestorage.app",
     messagingSenderId: "457738164717",
     appId:             "1:457738164717:web:b6513996c5f4c80161afe4"
   };
+
+  const LIMITES = {
+    'Datashow': 3,
+    'Sala da TV': 1,
+    'Lab. de Informática': 1
+  };
+
+  const RECURSOS = ['Datashow', 'Sala da TV', 'Lab. de Informática'];
 
   const app = initializeApp(firebaseConfig);
   const db  = getFirestore(app);
@@ -176,7 +206,6 @@
 
   let cache = [];
 
-  // Listener tempo real
   const q = query(COL, orderBy('data'), orderBy('horario'));
   onSnapshot(q, snap => {
     cache = snap.docs.map(d => ({ id: d.id, ...d.data() }));
@@ -184,13 +213,12 @@
     renderAvail();
   }, err => {
     document.getElementById('tabBody').innerHTML =
-      `<tr><td colspan="7" class="empty" style="color:#c53030">
+      `<tr><td colspan="8" class="empty" style="color:#c53030">
         ⚠️ Erro ao conectar. Verifique as regras do Firestore (modo teste).
       </td></tr>`;
     console.error(err);
   });
 
-  // Helpers
   const fmtData = d => { if(!d) return ''; const [y,m,dia]=d.split('-'); return `${dia}/${m}/${y}`; };
   const badgeClass = t => t==='Manhã'?'badge-manha':t==='Tarde'?'badge-tarde':'badge-noite';
   function showMsg(el, txt, tipo) {
@@ -198,47 +226,55 @@
     setTimeout(() => { el.className='msg'; el.textContent=''; }, 3500);
   }
 
-  // Disponibilidade
   window.renderAvail = () => {
     const d = document.getElementById('checkDate').value;
     const el = document.getElementById('availDisplay');
     if (!d) { el.innerHTML='<span style="color:#a0aec0">Selecione uma data acima.</span>'; return; }
-    let html = '<div style="display:flex;gap:12px;flex-wrap:wrap">';
-    ['Manhã','Tarde','Noite'].forEach(t => {
-      const livres = 3 - cache.filter(a => a.data===d && a.turno===t).length;
-      html += `<div style="background:#f7fafc;border:1.5px solid #e2e8f0;border-radius:10px;padding:10px 16px;min-width:110px;text-align:center">
-        <div class="badge ${badgeClass(t)}" style="margin-bottom:6px">${t}</div>
-        <div class="${livres>0?'slot slot-free':'slot slot-full'}">${livres>0?`${livres} vaga(s)`:'Esgotado'}</div>
-      </div>`;
+    let html = '';
+    RECURSOS.forEach(recurso => {
+      const limite = LIMITES[recurso];
+      html += `<div class="avail-section"><h3>📌 ${recurso}</h3><div class="avail-grid">`;
+      ['Manhã','Tarde','Noite'].forEach(t => {
+        const usados = cache.filter(a => a.data===d && a.turno===t && a.recurso===recurso).length;
+        const livres = limite - usados;
+        html += `<div style="background:#f7fafc;border:1.5px solid #e2e8f0;border-radius:10px;padding:10px 16px;min-width:110px;text-align:center">
+          <div class="badge ${badgeClass(t)}" style="margin-bottom:6px">${t}</div>
+          <div class="${livres>0?'slot slot-free':'slot slot-full'}">${livres>0?`${livres} vaga(s)`:'Esgotado'}</div>
+        </div>`;
+      });
+      html += `</div></div>`;
     });
-    el.innerHTML = html + '</div>';
+    el.innerHTML = html;
   };
 
-  // Agendar
   window.agendar = async () => {
     const get = id => document.getElementById(id).value.trim();
-    const nome=get('fNome'), turma=get('fTurma'), data=document.getElementById('fData').value,
+    const nome=get('fNome'), turma=get('fTurma'),
+          recurso=document.getElementById('fRecurso').value,
+          data=document.getElementById('fData').value,
           turno=document.getElementById('fTurno').value,
           horario=document.getElementById('fHorario').value,
           horarioFim=document.getElementById('fHorarioFim').value,
           obs=get('fObs');
     const msg=document.getElementById('fMsg'), btn=document.getElementById('btnAgendar');
 
-    if (!nome||!turma||!data||!turno||!horario||!horarioFim)
+    if (!nome||!turma||!recurso||!data||!turno||!horario||!horarioFim)
       return showMsg(msg,'Preencha todos os campos obrigatórios.','err');
     if (horarioFim<=horario)
       return showMsg(msg,'O horário de término deve ser após o início.','err');
     const hoje=new Date(); hoje.setHours(0,0,0,0);
     if (new Date(data+'T00:00:00') < hoje)
       return showMsg(msg,'Não é possível agendar para datas passadas.','err');
-    if (cache.filter(a=>a.data===data&&a.turno===turno).length >= 3)
-      return showMsg(msg,'Os 3 datashows já estão reservados neste turno/data.','err');
+
+    const usados = cache.filter(a=>a.data===data&&a.turno===turno&&a.recurso===recurso).length;
+    if (usados >= LIMITES[recurso])
+      return showMsg(msg,`"${recurso}" já está totalmente reservado neste turno/data.`,'err');
 
     btn.disabled=true; btn.textContent='Salvando...';
     try {
-      await addDoc(COL, { nome, turma, data, turno, horario, horarioFim, obs,
+      await addDoc(COL, { nome, turma, recurso, data, turno, horario, horarioFim, obs,
                           criadoEm: new Date().toISOString() });
-      ['fNome','fTurma','fData','fTurno','fHorario','fHorarioFim','fObs']
+      ['fNome','fTurma','fRecurso','fData','fTurno','fHorario','fHorarioFim','fObs']
         .forEach(id => document.getElementById(id).value='');
       showMsg(msg,'Agendamento realizado com sucesso! ✅','ok');
     } catch(e) {
@@ -248,25 +284,26 @@
     }
   };
 
-  // Cancelar
   window.cancelar = async id => {
     if (!confirm('Cancelar este agendamento?')) return;
     try { await deleteDoc(doc(db,'agendamentos',id)); }
     catch(e) { alert('Erro: '+e.message); }
   };
 
-  // Tabela
   window.renderTabela = () => {
     const fd=document.getElementById('filtData').value;
     const ft=document.getElementById('filtTurno').value;
+    const fr=document.getElementById('filtRecurso').value;
     let d=[...cache];
     if(fd) d=d.filter(a=>a.data===fd);
     if(ft) d=d.filter(a=>a.turno===ft);
-    d.sort((a,b)=>a.data.localeCompare(b.data)||a.horario.localeCompare(b.horario));
+    if(fr) d=d.filter(a=>a.recurso===fr);
+    d.sort((a,b)=>a.data.localeCompare(b.data)||a.recurso.localeCompare(b.recurso)||a.horario.localeCompare(b.horario));
     const tb=document.getElementById('tabBody');
-    if(!d.length){ tb.innerHTML='<tr><td colspan="7" class="empty">Nenhum agendamento encontrado.</td></tr>'; return; }
+    if(!d.length){ tb.innerHTML='<tr><td colspan="8" class="empty">Nenhum agendamento encontrado.</td></tr>'; return; }
     tb.innerHTML=d.map(a=>`<tr>
       <td>${fmtData(a.data)}</td>
+      <td><span class="badge badge-recurso">${a.recurso||'Datashow'}</span></td>
       <td><span class="badge ${badgeClass(a.turno)}">${a.turno}</span></td>
       <td>${a.horario} – ${a.horarioFim}</td>
       <td>${a.nome}</td><td>${a.turma}</td>
@@ -278,10 +315,10 @@
   window.limparFiltros = () => {
     document.getElementById('filtData').value='';
     document.getElementById('filtTurno').value='';
+    document.getElementById('filtRecurso').value='';
     renderTabela();
   };
 
-  // Init
   const hoje = new Date().toISOString().split('T')[0];
   document.getElementById('fData').min = hoje;
   document.getElementById('checkDate').value = hoje;
