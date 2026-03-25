@@ -57,7 +57,7 @@
 
 <header>
   <h1>📽️ Agendador de Datashow</h1>
-  <p>Escola — 2 datashows disponíveis · Manhã · Tarde · Noite</p>
+  <p>Escola — 3 datashows disponíveis · Manhã · Tarde · Noite</p>
   <div class="online-badge"><span class="dot"></span> Dados em tempo real · Firebase</div>
 </header>
 
@@ -205,7 +205,7 @@
     if (!d) { el.innerHTML='<span style="color:#a0aec0">Selecione uma data acima.</span>'; return; }
     let html = '<div style="display:flex;gap:12px;flex-wrap:wrap">';
     ['Manhã','Tarde','Noite'].forEach(t => {
-      const livres = 2 - cache.filter(a => a.data===d && a.turno===t).length;
+      const livres = 3 - cache.filter(a => a.data===d && a.turno===t).length;
       html += `<div style="background:#f7fafc;border:1.5px solid #e2e8f0;border-radius:10px;padding:10px 16px;min-width:110px;text-align:center">
         <div class="badge ${badgeClass(t)}" style="margin-bottom:6px">${t}</div>
         <div class="${livres>0?'slot slot-free':'slot slot-full'}">${livres>0?`${livres} vaga(s)`:'Esgotado'}</div>
@@ -231,8 +231,8 @@
     const hoje=new Date(); hoje.setHours(0,0,0,0);
     if (new Date(data+'T00:00:00') < hoje)
       return showMsg(msg,'Não é possível agendar para datas passadas.','err');
-    if (cache.filter(a=>a.data===data&&a.turno===turno).length >= 2)
-      return showMsg(msg,'Os 2 datashows já estão reservados neste turno/data.','err');
+    if (cache.filter(a=>a.data===data&&a.turno===turno).length >= 3)
+      return showMsg(msg,'Os 3 datashows já estão reservados neste turno/data.','err');
 
     btn.disabled=true; btn.textContent='Salvando...';
     try {
