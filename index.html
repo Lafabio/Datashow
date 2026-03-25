@@ -14,11 +14,11 @@
     border-radius:20px;padding:3px 10px;font-size:.75rem;margin-top:6px}
   .dot{width:8px;height:8px;border-radius:50%;background:#68d391;animation:pulse 1.5s infinite}
   @keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
-  .container{max-width:900px;margin:0 auto;padding:20px 16px}
+  .container{max-width:960px;margin:0 auto;padding:20px 16px}
   .card{background:#fff;border-radius:12px;padding:20px;margin-bottom:20px;box-shadow:0 2px 8px rgba(0,0,0,.08)}
   .card h2{font-size:1rem;font-weight:600;color:#2b6cb0;margin-bottom:14px;display:flex;align-items:center;gap:8px}
   .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-  @media(max-width:560px){.form-grid{grid-template-columns:1fr}}
+  @media(max-width:600px){.form-grid{grid-template-columns:1fr}}
   label{font-size:.82rem;font-weight:600;color:#4a5568;display:block;margin-bottom:4px}
   input,select{width:100%;padding:9px 12px;border:1.5px solid #cbd5e0;border-radius:8px;font-size:.9rem;outline:none;transition:border .2s}
   input:focus,select:focus{border-color:#2b6cb0}
@@ -27,24 +27,31 @@
   .btn-primary{background:#2b6cb0;color:#fff}
   .btn-primary:hover{background:#2c5282}
   .btn-primary:disabled{background:#90cdf4;cursor:not-allowed}
-  .btn-danger{background:#e53e3e;color:#fff;font-size:.78rem;padding:5px 12px}
+  .btn-danger{background:#e53e3e;color:#fff;font-size:.78rem;padding:5px 10px}
   .btn-danger:hover{background:#c53030}
+  .btn-success{background:#38a169;color:#fff;font-size:.78rem;padding:5px 10px}
+  .btn-success:hover{background:#276749}
+  .btn-warn{background:#d69e2e;color:#fff;font-size:.78rem;padding:5px 10px}
+  .btn-warn:hover{background:#b7791f}
   .msg{padding:10px 14px;border-radius:8px;font-size:.88rem;margin-top:10px;display:none}
   .msg.ok{background:#c6f6d5;color:#276749;display:block}
   .msg.err{background:#fed7d7;color:#c53030;display:block}
   .filter-row{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px;align-items:flex-end}
   .filter-row>div{display:flex;flex-direction:column;gap:4px}
   .filter-row label{font-size:.78rem}
-  table{width:100%;border-collapse:collapse;font-size:.84rem}
+  table{width:100%;border-collapse:collapse;font-size:.83rem}
   thead tr{background:#ebf4ff}
-  th,td{padding:9px 10px;border:1px solid #e2e8f0;text-align:left}
-  th{font-weight:600;color:#2b6cb0;font-size:.8rem}
+  th,td{padding:8px 10px;border:1px solid #e2e8f0;text-align:left}
+  th{font-weight:600;color:#2b6cb0;font-size:.78rem}
   tr:nth-child(even){background:#f7fafc}
-  .badge{display:inline-block;padding:2px 8px;border-radius:12px;font-size:.74rem;font-weight:600}
+  .badge{display:inline-block;padding:2px 8px;border-radius:12px;font-size:.73rem;font-weight:600}
   .badge-manha{background:#bee3f8;color:#2b6cb0}
   .badge-tarde{background:#fefcbf;color:#744210}
   .badge-noite{background:#e9d8fd;color:#553c9a}
-  .badge-recurso{background:#e2e8f0;color:#4a5568;font-size:.72rem}
+  .badge-recurso{background:#e2e8f0;color:#4a5568;font-size:.71rem}
+  .badge-aguardando{background:#fef3c7;color:#92400e}
+  .badge-aprovado{background:#d1fae5;color:#065f46}
+  .badge-recusado{background:#fee2e2;color:#991b1b}
   .empty{text-align:center;color:#a0aec0;padding:18px;font-size:.88rem}
   .slot{padding:3px 10px;border-radius:10px;font-size:.76rem;font-weight:600;display:block;text-align:center}
   .slot-free{background:#c6f6d5;color:#276749}
@@ -55,6 +62,23 @@
   .avail-section{margin-bottom:16px}
   .avail-section h3{font-size:.82rem;font-weight:700;color:#4a5568;margin-bottom:8px;text-transform:uppercase;letter-spacing:.05em}
   .avail-grid{display:flex;gap:10px;flex-wrap:wrap}
+  .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:100;align-items:center;justify-content:center}
+  .modal-overlay.open{display:flex}
+  .modal{background:#fff;border-radius:14px;padding:28px 24px;width:100%;max-width:380px;box-shadow:0 8px 32px rgba(0,0,0,.18)}
+  .modal h3{font-size:1rem;font-weight:700;color:#2b6cb0;margin-bottom:6px}
+  .modal p{font-size:.85rem;color:#4a5568;margin-bottom:14px}
+  .modal input{margin-bottom:12px}
+  .modal-btns{display:flex;gap:10px;justify-content:flex-end}
+  .senha-box{background:#ebf8ff;border:1.5px solid #90cdf4;border-radius:10px;padding:14px 18px;margin-top:12px;display:none}
+  .senha-box.show{display:block}
+  .senha-num{font-size:2.2rem;font-weight:800;color:#2b6cb0;letter-spacing:.25em;text-align:center;margin:6px 0}
+  .senha-aviso{font-size:.78rem;color:#2c5282;text-align:center}
+  .coord-bar{display:flex;align-items:center;justify-content:flex-end;gap:10px;margin-bottom:12px;flex-wrap:wrap}
+  .coord-info{font-size:.82rem;color:#276749;font-weight:600}
+  .tabs{display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap}
+  .tab{padding:7px 16px;border:1.5px solid #cbd5e0;border-radius:8px;font-size:.83rem;font-weight:600;cursor:pointer;background:#f7fafc;color:#4a5568}
+  .tab.active{background:#2b6cb0;color:#fff;border-color:#2b6cb0}
+  .acoes-col{display:flex;flex-direction:column;gap:4px}
 </style>
 </head>
 <body>
@@ -126,6 +150,11 @@
       <div class="full">
         <button class="btn btn-primary" id="btnAgendar" onclick="agendar()">Confirmar Agendamento</button>
         <div class="msg" id="fMsg"></div>
+        <div class="senha-box" id="senhaBox">
+          <div style="font-size:.82rem;font-weight:700;color:#2c5282;margin-bottom:2px">🔑 Sua senha de cancelamento:</div>
+          <div class="senha-num" id="senhaNum"></div>
+          <div class="senha-aviso">⚠️ Anote esta senha! Ela será necessária para cancelar sua reserva.</div>
+        </div>
       </div>
     </div>
   </div>
@@ -133,6 +162,17 @@
   <!-- Tabela -->
   <div class="card">
     <h2>📅 Agendamentos</h2>
+    <div class="coord-bar">
+      <span class="coord-info" id="coordInfo" style="display:none"></span>
+      <button class="btn btn-primary" style="font-size:.8rem;padding:7px 14px" id="btnCoordLogin" onclick="abrirLoginCoord()">🔐 Acesso Coordenador</button>
+      <button class="btn btn-warn" style="font-size:.8rem;padding:7px 14px;display:none" id="btnCoordSair" onclick="sairCoord()">Sair</button>
+    </div>
+    <div class="tabs" id="tabsContainer" style="display:none">
+      <button class="tab active" onclick="trocarAba('todos',this)">Todos</button>
+      <button class="tab" onclick="trocarAba('aguardando',this)">⏳ Aguardando</button>
+      <button class="tab" onclick="trocarAba('aprovado',this)">✅ Aprovados</button>
+      <button class="tab" onclick="trocarAba('recusado',this)">❌ Recusados</button>
+    </div>
     <div class="filter-row">
       <div>
         <label>Filtrar por data</label>
@@ -165,21 +205,65 @@
         <thead>
           <tr>
             <th>Data</th><th>Recurso</th><th>Turno</th><th>Horário</th>
-            <th>Professor(a)</th><th>Turma/Disciplina</th><th>Obs.</th><th>Cancelar</th>
+            <th>Professor(a)</th><th>Turma/Disciplina</th><th>Obs.</th>
+            <th>Status</th><th>Ações</th>
           </tr>
         </thead>
         <tbody id="tabBody">
-          <tr><td colspan="8" class="empty"><span class="spinner"></span> Conectando ao Firebase...</td></tr>
+          <tr><td colspan="9" class="empty"><span class="spinner"></span> Conectando ao Firebase...</td></tr>
         </tbody>
       </table>
     </div>
   </div>
+</div>
 
+<!-- Modal cancelamento com senha -->
+<div class="modal-overlay" id="modalCancelar">
+  <div class="modal">
+    <h3>🔑 Confirmar Cancelamento</h3>
+    <p>Digite a senha de 4 dígitos exibida no momento da reserva.</p>
+    <input type="number" id="inputSenhaCancelar" placeholder="Digite a senha..." style="font-size:1.3rem;letter-spacing:.2em;text-align:center"/>
+    <div class="msg" id="msgCancelar"></div>
+    <div class="modal-btns" style="margin-top:8px">
+      <button class="btn" style="background:#e2e8f0;color:#4a5568" onclick="fecharModal('modalCancelar')">Voltar</button>
+      <button class="btn btn-danger" onclick="confirmarCancelar()">Cancelar Reserva</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal login coordenador -->
+<div class="modal-overlay" id="modalCoord">
+  <div class="modal">
+    <h3>🔐 Acesso Coordenador</h3>
+    <p>Entre com suas credenciais para gerenciar os agendamentos.</p>
+    <label>Usuário</label>
+    <input type="text" id="coordUser" placeholder="coordenador" style="margin-bottom:10px"/>
+    <label>Senha</label>
+    <input type="password" id="coordPass" placeholder="••••••"/>
+    <div class="msg" id="msgCoord"></div>
+    <div class="modal-btns" style="margin-top:12px">
+      <button class="btn" style="background:#e2e8f0;color:#4a5568" onclick="fecharModal('modalCoord')">Cancelar</button>
+      <button class="btn btn-primary" onclick="loginCoord()">Entrar</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal recusar com motivo -->
+<div class="modal-overlay" id="modalRecusar">
+  <div class="modal">
+    <h3>❌ Recusar Agendamento</h3>
+    <p>Informe o motivo da recusa (opcional).</p>
+    <input type="text" id="inputMotivo" placeholder="Ex: Conflito de horário..."/>
+    <div class="modal-btns" style="margin-top:12px">
+      <button class="btn" style="background:#e2e8f0;color:#4a5568" onclick="fecharModal('modalRecusar')">Voltar</button>
+      <button class="btn btn-danger" onclick="confirmarRecusar()">Confirmar Recusa</button>
+    </div>
+  </div>
 </div>
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-  import { getFirestore, collection, addDoc, deleteDoc, doc,
+  import { getFirestore, collection, addDoc, deleteDoc, updateDoc, doc,
            query, orderBy, onSnapshot }
     from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
@@ -192,105 +276,171 @@
     appId:             "1:457738164717:web:b6513996c5f4c80161afe4"
   };
 
-  const LIMITES = {
-    'Datashow': 3,
-    'Sala da TV': 1,
-    'Lab. de Informática': 1
-  };
-
-  const RECURSOS = ['Datashow', 'Sala da TV', 'Lab. de Informática'];
+  // ── Configurações (altere as credenciais aqui) ──
+  const LIMITES   = { 'Datashow':3, 'Sala da TV':1, 'Lab. de Informática':1 };
+  const RECURSOS  = ['Datashow','Sala da TV','Lab. de Informática'];
+  const COORD_USER = 'coordenador';
+  const COORD_PASS = 'coord2025';
+  // ────────────────────────────────────────────────
 
   const app = initializeApp(firebaseConfig);
   const db  = getFirestore(app);
-  const COL = collection(db, 'agendamentos');
+  const COL = collection(db,'agendamentos');
 
-  let cache = [];
+  let cache=[], coordLogado=false, abaAtiva='todos';
+  let cancelandoId=null, cancelandoSenha=null, recusandoId=null;
 
   const q = query(COL, orderBy('data'), orderBy('horario'));
-  onSnapshot(q, snap => {
-    cache = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-    renderTabela();
-    renderAvail();
-  }, err => {
-    document.getElementById('tabBody').innerHTML =
-      `<tr><td colspan="8" class="empty" style="color:#c53030">
-        ⚠️ Erro ao conectar. Verifique as regras do Firestore (modo teste).
-      </td></tr>`;
+  onSnapshot(q, snap=>{
+    cache=snap.docs.map(d=>({id:d.id,...d.data()}));
+    renderTabela(); renderAvail();
+  }, err=>{
+    document.getElementById('tabBody').innerHTML=
+      `<tr><td colspan="9" class="empty" style="color:#c53030">⚠️ Erro ao conectar.</td></tr>`;
     console.error(err);
   });
 
-  const fmtData = d => { if(!d) return ''; const [y,m,dia]=d.split('-'); return `${dia}/${m}/${y}`; };
-  const badgeClass = t => t==='Manhã'?'badge-manha':t==='Tarde'?'badge-tarde':'badge-noite';
-  function showMsg(el, txt, tipo) {
-    el.textContent = txt; el.className = 'msg ' + tipo;
-    setTimeout(() => { el.className='msg'; el.textContent=''; }, 3500);
+  const fmtData = d=>{if(!d)return'';const[y,m,dia]=d.split('-');return`${dia}/${m}/${y}`;};
+  const badgeClass = t=>t==='Manhã'?'badge-manha':t==='Tarde'?'badge-tarde':'badge-noite';
+  const gerarSenha = ()=>String(Math.floor(1000+Math.random()*9000));
+  function showMsg(el,txt,tipo){
+    el.textContent=txt; el.className='msg '+tipo;
+    setTimeout(()=>{el.className='msg';el.textContent='';},4000);
   }
 
-  window.renderAvail = () => {
-    const d = document.getElementById('checkDate').value;
-    const el = document.getElementById('availDisplay');
-    if (!d) { el.innerHTML='<span style="color:#a0aec0">Selecione uma data acima.</span>'; return; }
-    let html = '';
-    RECURSOS.forEach(recurso => {
-      const limite = LIMITES[recurso];
-      html += `<div class="avail-section"><h3>📌 ${recurso}</h3><div class="avail-grid">`;
-      ['Manhã','Tarde','Noite'].forEach(t => {
-        const usados = cache.filter(a => a.data===d && a.turno===t && a.recurso===recurso).length;
-        const livres = limite - usados;
-        html += `<div style="background:#f7fafc;border:1.5px solid #e2e8f0;border-radius:10px;padding:10px 16px;min-width:110px;text-align:center">
+  // Disponibilidade
+  window.renderAvail = ()=>{
+    const d=document.getElementById('checkDate').value;
+    const el=document.getElementById('availDisplay');
+    if(!d){el.innerHTML='<span style="color:#a0aec0">Selecione uma data acima.</span>';return;}
+    let html='';
+    RECURSOS.forEach(recurso=>{
+      html+=`<div class="avail-section"><h3>📌 ${recurso}</h3><div class="avail-grid">`;
+      ['Manhã','Tarde','Noite'].forEach(t=>{
+        const usados=cache.filter(a=>a.data===d&&a.turno===t&&a.recurso===recurso&&a.status!=='recusado').length;
+        const livres=LIMITES[recurso]-usados;
+        html+=`<div style="background:#f7fafc;border:1.5px solid #e2e8f0;border-radius:10px;padding:10px 16px;min-width:110px;text-align:center">
           <div class="badge ${badgeClass(t)}" style="margin-bottom:6px">${t}</div>
           <div class="${livres>0?'slot slot-free':'slot slot-full'}">${livres>0?`${livres} vaga(s)`:'Esgotado'}</div>
         </div>`;
       });
-      html += `</div></div>`;
+      html+=`</div></div>`;
     });
-    el.innerHTML = html;
+    el.innerHTML=html;
   };
 
-  window.agendar = async () => {
-    const get = id => document.getElementById(id).value.trim();
-    const nome=get('fNome'), turma=get('fTurma'),
+  // Agendar
+  window.agendar = async()=>{
+    const get=id=>document.getElementById(id).value.trim();
+    const nome=get('fNome'),turma=get('fTurma'),obs=get('fObs'),
           recurso=document.getElementById('fRecurso').value,
           data=document.getElementById('fData').value,
           turno=document.getElementById('fTurno').value,
           horario=document.getElementById('fHorario').value,
-          horarioFim=document.getElementById('fHorarioFim').value,
-          obs=get('fObs');
-    const msg=document.getElementById('fMsg'), btn=document.getElementById('btnAgendar');
+          horarioFim=document.getElementById('fHorarioFim').value;
+    const msg=document.getElementById('fMsg'),btn=document.getElementById('btnAgendar');
+    const senhaBox=document.getElementById('senhaBox');
+    senhaBox.className='senha-box';
 
-    if (!nome||!turma||!recurso||!data||!turno||!horario||!horarioFim)
+    if(!nome||!turma||!recurso||!data||!turno||!horario||!horarioFim)
       return showMsg(msg,'Preencha todos os campos obrigatórios.','err');
-    if (horarioFim<=horario)
+    if(horarioFim<=horario)
       return showMsg(msg,'O horário de término deve ser após o início.','err');
-    const hoje=new Date(); hoje.setHours(0,0,0,0);
-    if (new Date(data+'T00:00:00') < hoje)
+    const hoje=new Date();hoje.setHours(0,0,0,0);
+    if(new Date(data+'T00:00:00')<hoje)
       return showMsg(msg,'Não é possível agendar para datas passadas.','err');
-
-    const usados = cache.filter(a=>a.data===data&&a.turno===turno&&a.recurso===recurso).length;
-    if (usados >= LIMITES[recurso])
+    const usados=cache.filter(a=>a.data===data&&a.turno===turno&&a.recurso===recurso&&a.status!=='recusado').length;
+    if(usados>=LIMITES[recurso])
       return showMsg(msg,`"${recurso}" já está totalmente reservado neste turno/data.`,'err');
 
-    btn.disabled=true; btn.textContent='Salvando...';
-    try {
-      await addDoc(COL, { nome, turma, recurso, data, turno, horario, horarioFim, obs,
-                          criadoEm: new Date().toISOString() });
+    const senha=gerarSenha();
+    btn.disabled=true;btn.textContent='Salvando...';
+    try{
+      await addDoc(COL,{nome,turma,recurso,data,turno,horario,horarioFim,obs,
+                        senha,status:'aguardando',criadoEm:new Date().toISOString()});
       ['fNome','fTurma','fRecurso','fData','fTurno','fHorario','fHorarioFim','fObs']
-        .forEach(id => document.getElementById(id).value='');
-      showMsg(msg,'Agendamento realizado com sucesso! ✅','ok');
-    } catch(e) {
-      showMsg(msg,'Erro ao salvar: '+e.message,'err');
-    } finally {
-      btn.disabled=false; btn.textContent='Confirmar Agendamento';
-    }
+        .forEach(id=>document.getElementById(id).value='');
+      document.getElementById('senhaNum').textContent=senha;
+      senhaBox.className='senha-box show';
+      showMsg(msg,'Agendamento enviado! Aguarde aprovação do coordenador. ✅','ok');
+    }catch(e){showMsg(msg,'Erro ao salvar: '+e.message,'err');}
+    finally{btn.disabled=false;btn.textContent='Confirmar Agendamento';}
   };
 
-  window.cancelar = async id => {
-    if (!confirm('Cancelar este agendamento?')) return;
-    try { await deleteDoc(doc(db,'agendamentos',id)); }
-    catch(e) { alert('Erro: '+e.message); }
+  // Cancelamento com senha
+  window.pedirCancelar=(id,senha)=>{
+    cancelandoId=id;cancelandoSenha=String(senha);
+    document.getElementById('inputSenhaCancelar').value='';
+    document.getElementById('msgCancelar').className='msg';
+    document.getElementById('modalCancelar').classList.add('open');
+  };
+  window.confirmarCancelar=async()=>{
+    const digitada=document.getElementById('inputSenhaCancelar').value.trim();
+    const msg=document.getElementById('msgCancelar');
+    if(digitada!==cancelandoSenha) return showMsg(msg,'Senha incorreta. Tente novamente.','err');
+    try{await deleteDoc(doc(db,'agendamentos',cancelandoId));fecharModal('modalCancelar');}
+    catch(e){showMsg(msg,'Erro: '+e.message,'err');}
   };
 
-  window.renderTabela = () => {
+  // Coordenador
+  window.abrirLoginCoord=()=>{
+    document.getElementById('coordUser').value='';
+    document.getElementById('coordPass').value='';
+    document.getElementById('msgCoord').className='msg';
+    document.getElementById('modalCoord').classList.add('open');
+  };
+  window.loginCoord=()=>{
+    const u=document.getElementById('coordUser').value.trim();
+    const p=document.getElementById('coordPass').value;
+    const msg=document.getElementById('msgCoord');
+    if(u===COORD_USER&&p===COORD_PASS){
+      coordLogado=true;fecharModal('modalCoord');
+      document.getElementById('btnCoordLogin').style.display='none';
+      document.getElementById('btnCoordSair').style.display='inline-block';
+      document.getElementById('coordInfo').style.display='inline';
+      document.getElementById('coordInfo').textContent='👤 Coordenador conectado';
+      document.getElementById('tabsContainer').style.display='flex';
+      renderTabela();
+    }else{showMsg(msg,'Usuário ou senha incorretos.','err');}
+  };
+  window.sairCoord=()=>{
+    coordLogado=false;abaAtiva='todos';
+    document.getElementById('btnCoordLogin').style.display='inline-block';
+    document.getElementById('btnCoordSair').style.display='none';
+    document.getElementById('coordInfo').style.display='none';
+    document.getElementById('tabsContainer').style.display='none';
+    renderTabela();
+  };
+  window.trocarAba=(aba,el)=>{
+    abaAtiva=aba;
+    document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+    el.classList.add('active');
+    renderTabela();
+  };
+  window.aprovar=async id=>{
+    try{await updateDoc(doc(db,'agendamentos',id),{status:'aprovado'});}
+    catch(e){alert('Erro: '+e.message);}
+  };
+  window.abrirRecusar=id=>{
+    recusandoId=id;
+    document.getElementById('inputMotivo').value='';
+    document.getElementById('modalRecusar').classList.add('open');
+  };
+  window.confirmarRecusar=async()=>{
+    const motivo=document.getElementById('inputMotivo').value.trim();
+    try{
+      await updateDoc(doc(db,'agendamentos',recusandoId),{status:'recusado',motivo});
+      fecharModal('modalRecusar');
+    }catch(e){alert('Erro: '+e.message);}
+  };
+  window.cancelarCoord=async id=>{
+    if(!confirm('Excluir este agendamento?'))return;
+    try{await deleteDoc(doc(db,'agendamentos',id));}
+    catch(e){alert('Erro: '+e.message);}
+  };
+
+  // Tabela
+  window.renderTabela=()=>{
     const fd=document.getElementById('filtData').value;
     const ft=document.getElementById('filtTurno').value;
     const fr=document.getElementById('filtRecurso').value;
@@ -298,30 +448,54 @@
     if(fd) d=d.filter(a=>a.data===fd);
     if(ft) d=d.filter(a=>a.turno===ft);
     if(fr) d=d.filter(a=>a.recurso===fr);
+    if(coordLogado&&abaAtiva!=='todos') d=d.filter(a=>(a.status||'aguardando')===abaAtiva);
     d.sort((a,b)=>a.data.localeCompare(b.data)||a.recurso.localeCompare(b.recurso)||a.horario.localeCompare(b.horario));
     const tb=document.getElementById('tabBody');
-    if(!d.length){ tb.innerHTML='<tr><td colspan="8" class="empty">Nenhum agendamento encontrado.</td></tr>'; return; }
-    tb.innerHTML=d.map(a=>`<tr>
-      <td>${fmtData(a.data)}</td>
-      <td><span class="badge badge-recurso">${a.recurso||'Datashow'}</span></td>
-      <td><span class="badge ${badgeClass(a.turno)}">${a.turno}</span></td>
-      <td>${a.horario} – ${a.horarioFim}</td>
-      <td>${a.nome}</td><td>${a.turma}</td>
-      <td style="color:#718096;font-size:.8rem">${a.obs||'—'}</td>
-      <td><button class="btn btn-danger" onclick="cancelar('${a.id}')">✕ Cancelar</button></td>
-    </tr>`).join('');
+    if(!d.length){tb.innerHTML='<tr><td colspan="9" class="empty">Nenhum agendamento encontrado.</td></tr>';return;}
+    tb.innerHTML=d.map(a=>{
+      const status=a.status||'aguardando';
+      const badgeSt=status==='aprovado'?'badge-aprovado':status==='recusado'?'badge-recusado':'badge-aguardando';
+      const labelSt=status==='aprovado'?'✅ Aprovado':status==='recusado'?'❌ Recusado':'⏳ Aguardando';
+      const motivoHtml=status==='recusado'&&a.motivo?`<br><small style="color:#991b1b;font-size:.75rem">${a.motivo}</small>`:'';
+      let acoes='<div class="acoes-col">';
+      if(coordLogado){
+        if(status==='aguardando'){
+          acoes+=`<button class="btn btn-success" onclick="aprovar('${a.id}')">✓ Aprovar</button>`;
+          acoes+=`<button class="btn btn-danger" onclick="abrirRecusar('${a.id}')">✕ Recusar</button>`;
+        }
+        acoes+=`<button class="btn btn-warn" onclick="cancelarCoord('${a.id}')">🗑 Excluir</button>`;
+      }else{
+        if(status!=='recusado')
+          acoes+=`<button class="btn btn-danger" onclick="pedirCancelar('${a.id}','${a.senha}')">✕ Cancelar</button>`;
+      }
+      acoes+='</div>';
+      return`<tr>
+        <td>${fmtData(a.data)}</td>
+        <td><span class="badge badge-recurso">${a.recurso||'Datashow'}</span></td>
+        <td><span class="badge ${badgeClass(a.turno)}">${a.turno}</span></td>
+        <td>${a.horario} – ${a.horarioFim}</td>
+        <td>${a.nome}</td><td>${a.turma}</td>
+        <td style="color:#718096;font-size:.8rem">${a.obs||'—'}</td>
+        <td><span class="badge ${badgeSt}">${labelSt}</span>${motivoHtml}</td>
+        <td>${acoes}</td>
+      </tr>`;
+    }).join('');
   };
 
-  window.limparFiltros = () => {
+  window.limparFiltros=()=>{
     document.getElementById('filtData').value='';
     document.getElementById('filtTurno').value='';
     document.getElementById('filtRecurso').value='';
     renderTabela();
   };
+  window.fecharModal=id=>document.getElementById(id).classList.remove('open');
+  document.querySelectorAll('.modal-overlay').forEach(m=>{
+    m.addEventListener('click',e=>{if(e.target===m)m.classList.remove('open');});
+  });
 
-  const hoje = new Date().toISOString().split('T')[0];
-  document.getElementById('fData').min = hoje;
-  document.getElementById('checkDate').value = hoje;
+  const hoje=new Date().toISOString().split('T')[0];
+  document.getElementById('fData').min=hoje;
+  document.getElementById('checkDate').value=hoje;
   renderAvail();
 </script>
 </body>
