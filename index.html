@@ -114,6 +114,14 @@
         <input type="text" id="fTurma" placeholder="Ex: 3A - Matemática"/>
       </div>
       <div>
+        <label>Número de Alunos</label>
+        <input type="number" id="fAlunos" placeholder="Ex: 30" min="1"/>
+      </div>
+      <div class="full">
+        <label>Conteúdo da Aula</label>
+        <input type="text" id="fConteudo" placeholder="Ex: Revisão de frações e operações básicas"/>
+      </div>
+      <div>
         <label>Recurso</label>
         <select id="fRecurso">
           <option value="">Selecione...</option>
@@ -166,6 +174,7 @@
       <span class="coord-info" id="coordInfo" style="display:none"></span>
       <button class="btn btn-primary" style="font-size:.8rem;padding:7px 14px" id="btnCoordLogin" onclick="abrirLoginCoord()">🔐 Acesso Coordenador</button>
       <button class="btn btn-warn" style="font-size:.8rem;padding:7px 14px;display:none" id="btnCoordSair" onclick="sairCoord()">Sair</button>
+      <button class="btn btn-success" style="font-size:.8rem;padding:7px 14px;display:none" id="btnRelatorio" onclick="gerarRelatorio()">📊 Relatório Mensal</button>
     </div>
     <div class="tabs" id="tabsContainer" style="display:none">
       <button class="tab active" onclick="trocarAba('todos',this)">Todos</button>
@@ -205,12 +214,12 @@
         <thead>
           <tr>
             <th>Data</th><th>Recurso</th><th>Turno</th><th>Horário</th>
-            <th>Professor(a)</th><th>Turma/Disciplina</th><th>Obs.</th>
+            <th>Professor(a)</th><th>Turma/Disciplina</th><th>Alunos</th><th>Conteúdo</th><th>Obs.</th>
             <th>Status</th><th>Ações</th>
           </tr>
         </thead>
         <tbody id="tabBody">
-          <tr><td colspan="9" class="empty"><span class="spinner"></span> Conectando ao Firebase...</td></tr>
+          <tr><td colspan="11" class="empty"><span class="spinner"></span> Conectando ao Firebase...</td></tr>
         </tbody>
       </table>
     </div>
@@ -257,6 +266,56 @@
     <div class="modal-btns" style="margin-top:12px">
       <button class="btn" style="background:#e2e8f0;color:#4a5568" onclick="fecharModal('modalRecusar')">Voltar</button>
       <button class="btn btn-danger" onclick="confirmarRecusar()">Confirmar Recusa</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal relatório mensal -->
+<div class="modal-overlay" id="modalRelatorio">
+  <div class="modal" style="max-width:600px">
+    <h3>📊 Relatório Mensal de Uso do Laboratório</h3>
+    <p>Selecione o mês e ano para gerar o relatório.</p>
+    <div style="display:flex;gap:10px;margin-bottom:12px">
+      <div style="flex:1">
+        <label>Mês</label>
+        <select id="relMes" style="width:100%">
+          <option value="0">Janeiro</option>
+          <option value="1">Fevereiro</option>
+          <option value="2">Março</option>
+          <option value="3">Abril</option>
+          <option value="4">Maio</option>
+          <option value="5">Junho</option>
+          <option value="6">Julho</option>
+          <option value="7">Agosto</option>
+          <option value="8">Setembro</option>
+          <option value="9">Outubro</option>
+          <option value="10">Novembro</option>
+          <option value="11">Dezembro</option>
+        </select>
+      </div>
+      <div style="flex:1">
+        <label>Ano</label>
+        <select id="relAno" style="width:100%"></select>
+      </div>
+    </div>
+    <div style="margin-bottom:12px">
+      <label>Filtrar por recurso</label>
+      <select id="relRecurso" style="width:100%">
+        <option value="">Todos</option>
+        <option>Datashow</option>
+        <option>Sala da TV</option>
+        <option>Lab. de Informática</option>
+      </select>
+    </div>
+    <button class="btn btn-primary" style="width:100%" onclick="gerarRelatorioMensal()">Gerar Relatório</button>
+    <div id="relResultado" style="margin-top:16px;display:none">
+      <div style="background:#f7fafc;border-radius:8px;padding:12px;margin-bottom:10px;max-height:300px;overflow-y:auto">
+        <div id="relConteudo"></div>
+      </div>
+      <button class="btn btn-success" style="width:100%" onclick="imprimirRelatorio()">🖨 Imprimir / Salvar PDF</button>
+    </div>
+    <div class="modal-btns" style="margin-top:12px">
+      <button class="btn" style="background:#e2e8f0;color:#4a5568" onclick="fecharModal('modalRelatorio')">Fechar</button>
     </div>
   </div>
 </div>
@@ -332,7 +391,7 @@
   // Agendar
   window.agendar = async()=>{
     const get=id=>document.getElementById(id).value.trim();
-    const nome=get('fNome'),turma=get('fTurma'),obs=get('fObs'),
+    const nome=get('fNome'),turma=get('fTurma'),alunos=get('fAlunos'),conteudo=get('fConteudo'),obs=get('fObs'),
           recurso=document.getElementById('fRecurso').value,
           data=document.getElementById('fData').value,
           turno=document.getElementById('fTurno').value,
@@ -356,9 +415,9 @@
     const senha=gerarSenha();
     btn.disabled=true;btn.textContent='Salvando...';
     try{
-      await addDoc(COL,{nome,turma,recurso,data,turno,horario,horarioFim,obs,
+      await addDoc(COL,{nome,turma,alunos,conteudo,recurso,data,turno,horario,horarioFim,obs,
                         senha,status:'aguardando',criadoEm:new Date().toISOString()});
-      ['fNome','fTurma','fRecurso','fData','fTurno','fHorario','fHorarioFim','fObs']
+      ['fNome','fTurma','fAlunos','fConteudo','fRecurso','fData','fTurno','fHorario','fHorarioFim','fObs']
         .forEach(id=>document.getElementById(id).value='');
       document.getElementById('senhaNum').textContent=senha;
       senhaBox.className='senha-box show';
@@ -397,6 +456,7 @@
       coordLogado=true;fecharModal('modalCoord');
       document.getElementById('btnCoordLogin').style.display='none';
       document.getElementById('btnCoordSair').style.display='inline-block';
+      document.getElementById('btnRelatorio').style.display='inline-block';
       document.getElementById('coordInfo').style.display='inline';
       document.getElementById('coordInfo').textContent='👤 Coordenador conectado';
       document.getElementById('tabsContainer').style.display='flex';
@@ -407,6 +467,7 @@
     coordLogado=false;abaAtiva='todos';
     document.getElementById('btnCoordLogin').style.display='inline-block';
     document.getElementById('btnCoordSair').style.display='none';
+    document.getElementById('btnRelatorio').style.display='none';
     document.getElementById('coordInfo').style.display='none';
     document.getElementById('tabsContainer').style.display='none';
     renderTabela();
@@ -451,7 +512,7 @@
     if(coordLogado&&abaAtiva!=='todos') d=d.filter(a=>(a.status||'aguardando')===abaAtiva);
     d.sort((a,b)=>a.data.localeCompare(b.data)||a.recurso.localeCompare(b.recurso)||a.horario.localeCompare(b.horario));
     const tb=document.getElementById('tabBody');
-    if(!d.length){tb.innerHTML='<tr><td colspan="9" class="empty">Nenhum agendamento encontrado.</td></tr>';return;}
+    if(!d.length){tb.innerHTML='<tr><td colspan="11" class="empty">Nenhum agendamento encontrado.</td></tr>';return;}
     tb.innerHTML=d.map(a=>{
       const status=a.status||'aguardando';
       const badgeSt=status==='aprovado'?'badge-aprovado':status==='recusado'?'badge-recusado':'badge-aguardando';
@@ -475,6 +536,8 @@
         <td><span class="badge ${badgeClass(a.turno)}">${a.turno}</span></td>
         <td>${a.horario} – ${a.horarioFim}</td>
         <td>${a.nome}</td><td>${a.turma}</td>
+        <td style="font-weight:600;color:#2b6cb0">${a.alunos||'—'}</td>
+        <td style="color:#4a5568;font-size:.85rem">${a.conteudo||'—'}</td>
         <td style="color:#718096;font-size:.8rem">${a.obs||'—'}</td>
         <td><span class="badge ${badgeSt}">${labelSt}</span>${motivoHtml}</td>
         <td>${acoes}</td>
@@ -488,6 +551,110 @@
     document.getElementById('filtRecurso').value='';
     renderTabela();
   };
+  
+  // Relatório Mensal
+  window.gerarRelatorio=()=>{
+    const sel=document.getElementById('relMes');
+    sel.value=new Date().getMonth();
+    const anoSel=document.getElementById('relAno');
+    anoSel.innerHTML='';
+    const anoAtual=new Date().getFullYear();
+    for(let a=anoAtual-2;a<=anoAtual+1;a++){
+      anoSel.innerHTML+=`<option value="${a}">${a}</option>`;
+    }
+    anoSel.value=anoAtual;
+    document.getElementById('relResultado').style.display='none';
+    document.getElementById('modalRelatorio').classList.add('open');
+  };
+  
+  window.gerarRelatorioMensal=()=>{
+    const mes=parseInt(document.getElementById('relMes').value);
+    const ano=parseInt(document.getElementById('relAno').value);
+    const recursoFiltro=document.getElementById('relRecurso').value;
+    
+    const dados=cache.filter(a=>{
+      if(!a.data)return false;
+      const [y,m,d]=a.data.split('-').map(Number);
+      const mesmaData=(m-1)===mes&&y===ano;
+      const mesmoRecurso=!recursoFiltro||a.recurso===recursoFiltro;
+      return mesmaData&&mesmoRecurso&&(a.status==='aprovado'||a.status==='aguardando');
+    });
+    
+    const totalReservas=dados.length;
+    const totalAlunos=dados.reduce((sum,a)=>sum+(parseInt(a.alunos)||0),0);
+    const porProfessor={};
+    const porDisciplina={};
+    const porRecurso={};
+    const conteudos=[];
+    
+    dados.forEach(a=>{
+      porProfessor[a.nome]=(porProfessor[a.nome]||0)+1;
+      porDisciplina[a.turma]=(porDisciplina[a.turma]||0)+1;
+      porRecurso[a.recurso]=(porRecurso[a.recurso]||0)+1;
+      if(a.conteudo)conteudos.push(a.conteudo);
+    });
+    
+    const nomesMeses=['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+    
+    let html=`<div style="text-align:center;margin-bottom:16px">
+      <h4 style="color:#2b6cb0;font-size:1rem;margin-bottom:4px">Relatório de ${nomesMeses[mes]} ${ano}</h4>
+      <p style="font-size:.85rem;color:#718096">${totalReservas} reserva(s) · ${totalAlunos} aluno(s) beneficiado(s)</p>
+    </div>`;
+    
+    html+=`<div style="margin-bottom:12px">
+      <h5 style="font-size:.85rem;font-weight:700;color:#2b6cb0;margin-bottom:6px">📚 Por Professor(a)</h5>
+      <ul style="font-size:.82rem;color:#4a5568;padding-left:18px;margin:0">
+        ${Object.entries(porProfessor).sort((a,b)=>b[1]-a[1]).map(([n,q])=>`<li>${n}: <strong>${q}</strong> reserva(s)</li>`).join('')}
+      </ul>
+    </div>`;
+    
+    html+=`<div style="margin-bottom:12px">
+      <h5 style="font-size:.85rem;font-weight:700;color:#2b6cb0;margin-bottom:6px">📖 Por Disciplina/Turma</h5>
+      <ul style="font-size:.82rem;color:#4a5568;padding-left:18px;margin:0">
+        ${Object.entries(porDisciplina).sort((a,b)=>b[1]-a[1]).map(([d,q])=>`<li>${d}: <strong>${q}</strong> uso(s)</li>`).join('')}
+      </ul>
+    </div>`;
+    
+    html+=`<div style="margin-bottom:12px">
+      <h5 style="font-size:.85rem;font-weight:700;color:#2b6cb0;margin-bottom:6px">🖥 Por Recurso</h5>
+      <ul style="font-size:.82rem;color:#4a5568;padding-left:18px;margin:0">
+        ${Object.entries(porRecurso).map(([r,q])=>`<li>${r}: <strong>${q}</strong> uso(s)</li>`).join('')}
+      </ul>
+    </div>`;
+    
+    if(conteudos.length>0){
+      html+=`<div>
+        <h5 style="font-size:.85rem;font-weight:700;color:#2b6cb0;margin-bottom:6px">📝 Conteúdos Ministrados</h5>
+        <ul style="font-size:.82rem;color:#4a5568;padding-left:18px;margin:0">
+          ${conteudos.map(c=>`<li>${c}</li>`).join('')}
+        </ul>
+      </div>`;
+    }
+    
+    document.getElementById('relConteudo').innerHTML=html;
+    document.getElementById('relResultado').style.display='block';
+  };
+  
+  window.imprimirRelatorio=()=>{
+    const conteudo=document.getElementById('relConteudo').innerHTML;
+    const mes=document.getElementById('relMes').options[document.getElementById('relMes').selectedIndex].text;
+    const ano=document.getElementById('relAno').value;
+    const win=window.open('','_blank');
+    win.document.write(`
+      <!DOCTYPE html>
+      <html><head><title>Relatório ${mes} ${ano}</title>
+      <style>body{font-family:Arial,sans-serif;padding:20px}h2{color:#2b6cb0}h4{color:#2c5282;margin-top:16px}ul{line-height:1.6}</style>
+      </head><body>
+      <h2>📊 Relatório Mensal de Uso do Laboratório</h2>
+      <h3>${mes} ${ano}</h3>
+      ${conteudo}
+      <p style="margin-top:24px;font-size:.8rem;color:#718096">Gerado em ${new Date().toLocaleString('pt-BR')}</p>
+      </body></html>
+    `);
+    win.document.close();
+    win.print();
+  };
+  
   window.fecharModal=id=>document.getElementById(id).classList.remove('open');
   document.querySelectorAll('.modal-overlay').forEach(m=>{
     m.addEventListener('click',e=>{if(e.target===m)m.classList.remove('open');});
