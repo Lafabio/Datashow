@@ -59,13 +59,24 @@
   .filter-row>div{display:flex;flex-direction:column;gap:4px}
   .filter-row label{font-size:.74rem}
 
+  /* Period bar */
+  .periodo-container{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:16px;flex-wrap:wrap;background:#f8fafc;padding:10px 14px;border-radius:12px;border:1px solid #e2e8f0}
+  .periodo-tabs{display:flex;gap:6px;flex-wrap:wrap}
+  .btn-periodo{padding:7px 14px;border:1px solid #cbd5e1;border-radius:8px;font-size:.82rem;font-weight:600;cursor:pointer;background:#ffffff;color:#475569;transition:all .15s}
+  .btn-periodo:hover{background:#f1f5f9;color:#1e293b}
+  .btn-periodo.active{background:#2563eb;color:#ffffff;border-color:#2563eb;box-shadow:0 2px 4px rgba(37,99,235,0.2)}
+  .periodo-nav{display:flex;align-items:center;gap:8px}
+  .btn-nav{width:32px;height:32px;border-radius:8px;border:1px solid #cbd5e1;background:#ffffff;color:#1e293b;font-weight:bold;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;transition:all .15s}
+  .btn-nav:hover{background:#f1f5f9;border-color:#94a3b8}
+  .periodo-texto{font-size:.84rem;font-weight:700;color:#1e3a8a;white-space:nowrap}
+
   /* Table */
   .table-wrap{width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch;border:1px solid #e2e8f0;border-radius:12px;background:#ffffff;box-shadow:0 1px 3px rgba(0,0,0,0.02)}
-  .table-wrap::-webkit-scrollbar{height:8px}
+  .table-wrap::-webkit-scrollbar{height:7px}
   .table-wrap::-webkit-scrollbar-track{background:#f1f5f9}
   .table-wrap::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:4px}
   .table-wrap::-webkit-scrollbar-thumb:hover{background:#94a3b8}
-  table{width:100%;min-width:1120px;border-collapse:separate;border-spacing:0;font-size:.84rem}
+  table{width:100%;min-width:760px;border-collapse:separate;border-spacing:0;font-size:.84rem}
   thead tr{background:#f8fafc}
   th{padding:12px 14px;border-bottom:2px solid #e2e8f0;border-right:1px solid #e2e8f0;text-align:left;font-weight:700;color:#475569;font-size:.73rem;text-transform:uppercase;letter-spacing:.04em;white-space:nowrap}
   th:last-child{border-right:none}
@@ -73,24 +84,9 @@
   td:last-child{border-right:none}
   tr:last-child td{border-bottom:none}
   tbody tr:hover{background:#f8fafc}
-  .empty{text-align:center;color:#94a3b8;padding:24px;font-size:.9rem}
-
-  /* Specific column widths to prevent cutoff */
-  th:nth-child(1), td:nth-child(1){ min-width: 95px; white-space: nowrap; } /* Data */
-  th:nth-child(2), td:nth-child(2){ min-width: 130px; white-space: nowrap; } /* Recurso */
-  th:nth-child(3), td:nth-child(3){ min-width: 85px; white-space: nowrap; text-align: center; } /* Turno */
-  th:nth-child(4), td:nth-child(4){ min-width: 115px; white-space: nowrap; } /* Horário */
-  th:nth-child(5), td:nth-child(5){ min-width: 130px; } /* Professor */
-  th:nth-child(6), td:nth-child(6){ min-width: 130px; } /* Turma */
-  th:nth-child(7), td:nth-child(7){ min-width: 70px; text-align: center; } /* Alunos */
-  th:nth-child(8), td:nth-child(8){ min-width: 160px; } /* Conteúdo */
-  th:nth-child(9), td:nth-child(9){ min-width: 110px; } /* Obs */
-  th:nth-child(10), td:nth-child(10){
-    min-width: 145px;
-    text-align: center;
-    white-space: nowrap;
-  } /* Status */
-  th:nth-child(11), td:nth-child(11){ min-width: 110px; text-align: center; } /* Ações */
+  .row-hoje{background:#eff6ff !important}
+  .tag-hoje{background:#2563eb;color:#ffffff;font-size:.65rem;padding:2px 6px;border-radius:6px;font-weight:700;margin-left:4px;vertical-align:middle;text-transform:uppercase}
+  .empty{text-align:center;color:#94a3b8;padding:28px;font-size:.9rem}
 
   /* Badges */
   .badge{display:inline-flex;align-items:center;padding:3px 10px;border-radius:20px;font-size:.74rem;font-weight:600;letter-spacing:.01em;white-space:nowrap}
@@ -244,9 +240,23 @@
       <button class="tab" onclick="trocarAba('aprovado',this)">✅ Aprovados</button>
       <button class="tab" onclick="trocarAba('recusado',this)">❌ Recusados</button>
     </div>
+    <!-- Seletor de Período Rápido -->
+    <div class="periodo-container">
+      <div class="periodo-tabs">
+        <button type="button" class="btn-periodo active" id="btnPerSemana" onclick="setPeriodo('semana')">📅 Esta Semana</button>
+        <button type="button" class="btn-periodo" id="btnPerHoje" onclick="setPeriodo('hoje')">☀️ Hoje</button>
+        <button type="button" class="btn-periodo" id="btnPerMes" onclick="setPeriodo('mes')">🗓 Este Mês</button>
+        <button type="button" class="btn-periodo" id="btnPerTodos" onclick="setPeriodo('todos')">🗂 Histórico Completo</button>
+      </div>
+      <div class="periodo-nav" id="periodoNav">
+        <button type="button" class="btn-nav" onclick="mudarSemana(-1)" title="Semana anterior">◀</button>
+        <span class="periodo-texto" id="periodoTexto">Esta semana</span>
+        <button type="button" class="btn-nav" onclick="mudarSemana(1)" title="Próxima semana">▶</button>
+      </div>
+    </div>
     <div class="filter-row">
       <div>
-        <label>Filtrar por data</label>
+        <label>Buscar data específica</label>
         <input type="date" id="filtData" oninput="renderTabela()"/>
       </div>
       <div>
@@ -276,13 +286,18 @@
       <table>
         <thead>
           <tr>
-            <th>Data</th><th>Recurso</th><th>Turno</th><th>Horário</th>
-            <th>Professor(a)</th><th>Turma/Disciplina</th><th>Alunos</th><th>Conteúdo</th><th>Obs.</th>
-            <th>Status</th><th>Ações</th>
+            <th style="min-width:115px">Data / Turno</th>
+            <th style="min-width:110px">Horário</th>
+            <th style="min-width:125px">Recurso</th>
+            <th style="min-width:135px;text-align:center">Status</th>
+            <th style="min-width:130px">Professor(a)</th>
+            <th style="min-width:120px">Turma / Alunos</th>
+            <th style="min-width:150px">Conteúdo / Obs.</th>
+            <th style="min-width:105px;text-align:center">Ações</th>
           </tr>
         </thead>
         <tbody id="tabBody">
-          <tr><td colspan="11" class="empty"><span class="spinner"></span> Conectando ao Firebase...</td></tr>
+          <tr><td colspan="8" class="empty"><span class="spinner"></span> Conectando ao Firebase...</td></tr>
         </tbody>
       </table>
     </div>
@@ -412,6 +427,77 @@
 
   let cache=[], coordLogado=false, abaAtiva='todos';
   let cancelandoId=null, cancelandoSenha=null, recusandoId=null;
+  let filtroPeriodo = 'semana';
+  let semanaOffset = 0;
+
+  function getWeekRange(offsetWeeks = 0) {
+    const d = new Date();
+    d.setHours(0,0,0,0);
+    d.setDate(d.getDate() + (offsetWeeks * 7));
+    const day = d.getDay();
+    const diffToMonday = day === 0 ? -6 : 1 - day;
+    
+    const monday = new Date(d);
+    monday.setDate(d.getDate() + diffToMonday);
+    
+    const sunday = new Date(monday);
+    sunday.setDate(monday.getDate() + 6);
+    
+    const toISO = dt => {
+      const y = dt.getFullYear();
+      const m = String(dt.getMonth() + 1).padStart(2, '0');
+      const dia = String(dt.getDate()).padStart(2, '0');
+      return `${y}-${m}-${dia}`;
+    };
+    
+    const toBR = dt => {
+      const dia = String(dt.getDate()).padStart(2, '0');
+      const m = String(dt.getMonth() + 1).padStart(2, '0');
+      return `${dia}/${m}`;
+    };
+    
+    return {
+      start: toISO(monday),
+      end: toISO(sunday),
+      label: `${toBR(monday)} a ${toBR(sunday)}`
+    };
+  }
+
+  window.setPeriodo = p => {
+    filtroPeriodo = p;
+    if(p === 'semana') semanaOffset = 0;
+    atualizarBotoesPeriodo();
+    renderTabela();
+  };
+
+  window.mudarSemana = delta => {
+    filtroPeriodo = 'semana';
+    semanaOffset += delta;
+    atualizarBotoesPeriodo();
+    renderTabela();
+  };
+
+  function atualizarBotoesPeriodo() {
+    ['semana','hoje','mes','todos'].forEach(p => {
+      const el = document.getElementById('btnPer' + p.charAt(0).toUpperCase() + p.slice(1));
+      if(el) {
+        if(filtroPeriodo === p) el.classList.add('active');
+        else el.classList.remove('active');
+      }
+    });
+    const nav = document.getElementById('periodoNav');
+    const txt = document.getElementById('periodoTexto');
+    if(nav && txt) {
+      if(filtroPeriodo === 'semana') {
+        nav.style.display = 'flex';
+        const range = getWeekRange(semanaOffset);
+        const prefix = semanaOffset === 0 ? '📌 Esta semana: ' : 'Semana: ';
+        txt.textContent = prefix + range.label;
+      } else {
+        nav.style.display = 'none';
+      }
+    }
+  }
 
   const q = query(COL, orderBy('data'), orderBy('horario'));
   onSnapshot(q, snap=>{
@@ -570,18 +656,54 @@
     const ft=document.getElementById('filtTurno').value;
     const fr=document.getElementById('filtRecurso').value;
     let d=[...cache];
-    if(fd) d=d.filter(a=>a.data===fd);
+    
+    const hojeIso = new Date().toISOString().split('T')[0];
+
+    // Se o usuário selecionou uma data específica no input de data:
+    if(fd) {
+      d = d.filter(a => a.data === fd);
+    } else {
+      // Aplica o filtro de período
+      if(filtroPeriodo === 'semana') {
+        const range = getWeekRange(semanaOffset);
+        d = d.filter(a => a.data >= range.start && a.data <= range.end);
+      } else if(filtroPeriodo === 'hoje') {
+        d = d.filter(a => a.data === hojeIso);
+      } else if(filtroPeriodo === 'mes') {
+        const ymAtual = hojeIso.slice(0, 7);
+        d = d.filter(a => a.data && a.data.startsWith(ymAtual));
+      }
+    }
+
     if(ft) d=d.filter(a=>a.turno===ft);
     if(fr) d=d.filter(a=>a.recurso===fr);
     if(coordLogado&&abaAtiva!=='todos') d=d.filter(a=>(a.status||'aguardando')===abaAtiva);
-    d.sort((a,b)=>a.data.localeCompare(b.data)||a.recurso.localeCompare(b.recurso)||a.horario.localeCompare(b.horario));
+
+    // Ordenação: se for histórico completo, do mais recente para o mais antigo; senão, cronológico
+    if(filtroPeriodo === 'todos' && !fd) {
+      d.sort((a,b)=>b.data.localeCompare(a.data)||a.recurso.localeCompare(b.recurso)||a.horario.localeCompare(b.horario));
+    } else {
+      d.sort((a,b)=>a.data.localeCompare(b.data)||a.recurso.localeCompare(b.recurso)||a.horario.localeCompare(b.horario));
+    }
+
     const tb=document.getElementById('tabBody');
-    if(!d.length){tb.innerHTML='<tr><td colspan="11" class="empty">Nenhum agendamento encontrado.</td></tr>';return;}
+    if(!d.length){
+      let msgVazio = 'Nenhum agendamento encontrado para este período.';
+      if(filtroPeriodo === 'semana') {
+        msgVazio = `Nenhum agendamento para esta semana. <button type="button" class="btn btn-primary" style="margin-left:10px;padding:4px 10px;font-size:.78rem" onclick="setPeriodo('todos')">Ver Todo o Histórico</button>`;
+      }
+      tb.innerHTML=`<tr><td colspan="8" class="empty">${msgVazio}</td></tr>`;
+      return;
+    }
+
     tb.innerHTML=d.map(a=>{
       const status=a.status||'aguardando';
       const badgeSt=status==='aprovado'?'badge-aprovado':status==='recusado'?'badge-recusado':'badge-aguardando';
       const labelSt=status==='aprovado'?'✅ Aprovado':status==='recusado'?'❌ Recusado':'⏳ Aguardando';
-      const motivoHtml=status==='recusado'&&a.motivo?`<br><small style="color:#991b1b;font-size:.75rem">${a.motivo}</small>`:'';
+      const motivoHtml=status==='recusado'&&a.motivo?`<div style="color:#b91c1c;font-size:.72rem;margin-top:2px"><em>${a.motivo}</em></div>`:'';
+      const eHoje = a.data === hojeIso;
+      const rowClass = eHoje ? 'row-hoje' : '';
+
       let acoes='<div class="acoes-col">';
       if(coordLogado){
         if(status==='aguardando'){
@@ -594,17 +716,35 @@
           acoes+=`<button class="btn btn-danger" onclick="pedirCancelar('${a.id}','${a.senha}')">✕ Cancelar</button>`;
       }
       acoes+='</div>';
-      return`<tr>
-        <td>${fmtData(a.data)}</td>
-        <td><span class="badge badge-recurso">${a.recurso||'Datashow'}</span></td>
-        <td><span class="badge ${badgeClass(a.turno)}">${a.turno}</span></td>
-        <td>${a.horario} – ${a.horarioFim}</td>
-        <td>${a.nome}</td><td>${a.turma}</td>
-        <td style="font-weight:600;color:#2b6cb0">${a.alunos||'—'}</td>
-        <td style="color:#4a5568;font-size:.85rem">${a.conteudo||'—'}</td>
-        <td style="color:#718096;font-size:.8rem">${a.obs||'—'}</td>
-        <td><span class="badge ${badgeSt}">${labelSt}</span>${motivoHtml}</td>
-        <td>${acoes}</td>
+
+      return`<tr class="${rowClass}">
+        <td>
+          <div style="font-weight:700;color:#0f172a;display:flex;align-items:center;gap:4px">
+            ${fmtData(a.data)}
+            ${eHoje ? '<span class="tag-hoje">Hoje</span>' : ''}
+          </div>
+          <span class="badge ${badgeClass(a.turno)}" style="margin-top:4px">${a.turno}</span>
+        </td>
+        <td style="font-weight:600;color:#334155;white-space:nowrap">
+          🕒 ${a.horario} – ${a.horarioFim}
+        </td>
+        <td>
+          <span class="badge badge-recurso">📌 ${a.recurso||'Datashow'}</span>
+        </td>
+        <td style="text-align:center">
+          <span class="badge ${badgeSt}">${labelSt}</span>
+          ${motivoHtml}
+        </td>
+        <td style="font-weight:600;color:#1e293b">${a.nome}</td>
+        <td>
+          <div style="font-weight:600;color:#1e293b">${a.turma}</div>
+          <div style="font-size:.78rem;color:#64748b">${a.alunos ? a.alunos + ' alunos' : '—'}</div>
+        </td>
+        <td>
+          <div style="color:#334155;font-size:.84rem">${a.conteudo||'—'}</div>
+          ${a.obs ? `<div style="font-size:.75rem;color:#64748b;margin-top:3px"><em>Obs: ${a.obs}</em></div>` : ''}
+        </td>
+        <td style="text-align:center">${acoes}</td>
       </tr>`;
     }).join('');
   };
@@ -613,6 +753,9 @@
     document.getElementById('filtData').value='';
     document.getElementById('filtTurno').value='';
     document.getElementById('filtRecurso').value='';
+    filtroPeriodo = 'semana';
+    semanaOffset = 0;
+    atualizarBotoesPeriodo();
     renderTabela();
   };
   
@@ -727,6 +870,7 @@
   const hoje=new Date().toISOString().split('T')[0];
   document.getElementById('fData').min=hoje;
   document.getElementById('checkDate').value=hoje;
+  atualizarBotoesPeriodo();
   renderAvail();
 </script>
 </body>
