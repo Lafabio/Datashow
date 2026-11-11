@@ -71,22 +71,32 @@
   .periodo-texto{font-size:.84rem;font-weight:700;color:#1e3a8a;white-space:nowrap}
 
   /* Table */
-  .table-wrap{width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch;border:1px solid #e2e8f0;border-radius:12px;background:#ffffff;box-shadow:0 1px 3px rgba(0,0,0,0.02)}
-  .table-wrap::-webkit-scrollbar{height:7px}
-  .table-wrap::-webkit-scrollbar-track{background:#f1f5f9}
-  .table-wrap::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:4px}
-  .table-wrap::-webkit-scrollbar-thumb:hover{background:#94a3b8}
-  table{width:100%;min-width:760px;border-collapse:separate;border-spacing:0;font-size:.84rem}
+  .table-wrap{width:100%;overflow:hidden;border:1px solid #e2e8f0;border-radius:12px;background:#ffffff;box-shadow:0 1px 3px rgba(0,0,0,0.02)}
+  table{width:100%;border-collapse:separate;border-spacing:0;font-size:.84rem;table-layout:fixed}
   thead tr{background:#f8fafc}
-  th{padding:12px 14px;border-bottom:2px solid #e2e8f0;border-right:1px solid #e2e8f0;text-align:left;font-weight:700;color:#475569;font-size:.73rem;text-transform:uppercase;letter-spacing:.04em;white-space:nowrap}
+  th{padding:12px 10px;border-bottom:2px solid #e2e8f0;border-right:1px solid #e2e8f0;text-align:left;font-weight:700;color:#475569;font-size:.73rem;text-transform:uppercase;letter-spacing:.04em}
   th:last-child{border-right:none}
-  td{padding:10px 12px;border-bottom:1px solid #f1f5f9;border-right:1px solid #f1f5f9;text-align:left;color:#334155;vertical-align:middle}
+  td{padding:10px 10px;border-bottom:1px solid #f1f5f9;border-right:1px solid #f1f5f9;text-align:left;color:#334155;vertical-align:middle;word-break:break-word}
   td:last-child{border-right:none}
   tr:last-child td{border-bottom:none}
   tbody tr:hover{background:#f8fafc}
   .row-hoje{background:#eff6ff !important}
   .tag-hoje{background:#2563eb;color:#ffffff;font-size:.65rem;padding:2px 6px;border-radius:6px;font-weight:700;margin-left:4px;vertical-align:middle;text-transform:uppercase}
   .empty{text-align:center;color:#94a3b8;padding:28px;font-size:.9rem}
+
+  /* Total responsiveness: transform into cards on screens <= 768px (NO horizontal scroll) */
+  @media(max-width:768px){
+    .table-wrap{border:none;background:transparent;box-shadow:none;overflow:visible}
+    table,thead,tbody,th,td,tr{display:block;width:100%!important;box-sizing:border-box}
+    thead{display:none}
+    tbody tr{background:#ffffff;border:1.5px solid #e2e8f0;border-radius:14px;padding:14px 16px;margin-bottom:14px;box-shadow:0 2px 8px rgba(15,23,42,0.04)}
+    tbody tr.row-hoje{border-color:#93c5fd;background:#f8fbff!important}
+    tbody td{padding:6px 0;border:none!important;display:flex;justify-content:space-between;align-items:center;gap:10px}
+    tbody td::before{content:attr(data-label);font-size:.74rem;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.03em;flex-shrink:0}
+    tbody td.td-full{display:block;border-top:1px solid #f1f5f9!important;margin-top:6px;padding-top:8px}
+    tbody td.td-full::before{display:block;margin-bottom:3px}
+    .acoes-col{flex-direction:row;flex-wrap:wrap;justify-content:flex-end;width:100%;gap:6px}
+  }
 
   /* Badges */
   .badge{display:inline-flex;align-items:center;padding:3px 10px;border-radius:20px;font-size:.74rem;font-weight:600;letter-spacing:.01em;white-space:nowrap}
@@ -286,18 +296,17 @@
       <table>
         <thead>
           <tr>
-            <th style="min-width:115px">Data / Turno</th>
-            <th style="min-width:110px">Horário</th>
-            <th style="min-width:125px">Recurso</th>
-            <th style="min-width:135px;text-align:center">Status</th>
-            <th style="min-width:130px">Professor(a)</th>
-            <th style="min-width:120px">Turma / Alunos</th>
-            <th style="min-width:150px">Conteúdo / Obs.</th>
-            <th style="min-width:105px;text-align:center">Ações</th>
+            <th style="width:16%">Data e Turno</th>
+            <th style="width:13%">Horário</th>
+            <th style="width:14%">Recurso</th>
+            <th style="width:15%;text-align:center">Status</th>
+            <th style="width:18%">Professor(a) / Turma</th>
+            <th style="width:14%">Conteúdo / Obs.</th>
+            <th style="width:10%;text-align:center">Ações</th>
           </tr>
         </thead>
         <tbody id="tabBody">
-          <tr><td colspan="8" class="empty"><span class="spinner"></span> Conectando ao Firebase...</td></tr>
+          <tr><td colspan="7" class="empty"><span class="spinner"></span> Conectando ao Firebase...</td></tr>
         </tbody>
       </table>
     </div>
@@ -692,7 +701,7 @@
       if(filtroPeriodo === 'semana') {
         msgVazio = `Nenhum agendamento para esta semana. <button type="button" class="btn btn-primary" style="margin-left:10px;padding:4px 10px;font-size:.78rem" onclick="setPeriodo('todos')">Ver Todo o Histórico</button>`;
       }
-      tb.innerHTML=`<tr><td colspan="8" class="empty">${msgVazio}</td></tr>`;
+      tb.innerHTML=`<tr><td colspan="7" class="empty">${msgVazio}</td></tr>`;
       return;
     }
 
@@ -718,33 +727,34 @@
       acoes+='</div>';
 
       return`<tr class="${rowClass}">
-        <td>
-          <div style="font-weight:700;color:#0f172a;display:flex;align-items:center;gap:4px">
+        <td data-label="Data e Turno">
+          <div style="font-weight:700;color:#0f172a;display:inline-flex;align-items:center;gap:4px">
             ${fmtData(a.data)}
             ${eHoje ? '<span class="tag-hoje">Hoje</span>' : ''}
           </div>
-          <span class="badge ${badgeClass(a.turno)}" style="margin-top:4px">${a.turno}</span>
+          <span class="badge ${badgeClass(a.turno)}" style="margin-left:4px">${a.turno}</span>
         </td>
-        <td style="font-weight:600;color:#334155;white-space:nowrap">
+        <td data-label="Horário" style="font-weight:600;color:#334155">
           🕒 ${a.horario} – ${a.horarioFim}
         </td>
-        <td>
+        <td data-label="Recurso">
           <span class="badge badge-recurso">📌 ${a.recurso||'Datashow'}</span>
         </td>
-        <td style="text-align:center">
+        <td data-label="Status" style="text-align:center">
           <span class="badge ${badgeSt}">${labelSt}</span>
           ${motivoHtml}
         </td>
-        <td style="font-weight:600;color:#1e293b">${a.nome}</td>
-        <td>
-          <div style="font-weight:600;color:#1e293b">${a.turma}</div>
-          <div style="font-size:.78rem;color:#64748b">${a.alunos ? a.alunos + ' alunos' : '—'}</div>
+        <td data-label="Professor / Turma">
+          <div style="font-weight:700;color:#1e293b">${a.nome}</div>
+          <div style="font-size:.78rem;color:#64748b">${a.turma} ${a.alunos ? ' · ' + a.alunos + ' alunos' : ''}</div>
         </td>
-        <td>
+        <td data-label="Conteúdo / Obs" class="td-full">
           <div style="color:#334155;font-size:.84rem">${a.conteudo||'—'}</div>
-          ${a.obs ? `<div style="font-size:.75rem;color:#64748b;margin-top:3px"><em>Obs: ${a.obs}</em></div>` : ''}
+          ${a.obs ? `<div style="font-size:.75rem;color:#64748b;margin-top:2px"><em>Obs: ${a.obs}</em></div>` : ''}
         </td>
-        <td style="text-align:center">${acoes}</td>
+        <td data-label="Ações" style="text-align:center" class="td-full">
+          ${acoes}
+        </td>
       </tr>`;
     }).join('');
   };
